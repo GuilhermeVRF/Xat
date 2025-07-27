@@ -116,6 +116,12 @@ class ChatClient(ctk.CTk):
         self.area_mensagens.configure(state='normal')
         self.area_mensagens.delete("1.0", "end")
 
+        if chat_id == "global":
+            self.area_mensagens.insert("end", "Você está no chat global.\n")
+        else:
+            nome = self.usuarios_ativos.get(chat_id, "Desconhecido")
+            self.area_mensagens.insert("end", f"Você está conversando com {nome} ({chat_id}).\n")
+
         if chat_id not in self.historico_mensagens:
             self.historico_mensagens[chat_id] = []
 
