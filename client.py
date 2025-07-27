@@ -158,9 +158,10 @@ class ChatClient(ctk.CTk):
 
                 if dados.startswith("MSG_GLOBAL|"):
                     _, remetente, msg = dados.split("|", 2)
-                    self.area_mensagens.configure(state='normal')
-                    self.area_mensagens.insert("end", f"[Global] {remetente}: {msg}\n")
-                    self.area_mensagens.configure(state='disabled')
+                    if self.chat_atual == "global":
+                        self.area_mensagens.configure(state='normal')
+                        self.area_mensagens.insert("end", f"[Global] {remetente}: {msg}\n")
+                        self.area_mensagens.configure(state='disabled')
                     self.historico_mensagens.setdefault("global", []).append(f"[Global] {remetente}: {msg}\n")
                 elif dados.startswith("MSG_PRIV|"):
                     _, numero_remetente, nome_remetente, msg = dados.split("|", 3)
