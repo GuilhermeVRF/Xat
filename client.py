@@ -84,8 +84,11 @@ class ChatClient(ctk.CTk):
         sidebar = ctk.CTkFrame(main_frame, width=200)
         sidebar.pack(side='left', fill='y')
 
-        self.lista_chats = ctk.CTkScrollableFrame(sidebar, label_text="Conversas")
+        self.lista_chats = ctk.CTkScrollableFrame(sidebar)
         self.lista_chats.pack(fill='both', expand=True, padx=10, pady=10)
+
+        self.label_nome = ctk.CTkLabel(self.lista_chats, text=self.nome + " - " + self.numero, font=ctk.CTkFont(size=14, weight="bold"))
+        self.label_nome.pack(pady=(5, 10), anchor='center')
 
         # Adicionar Chat Global
         btn = ctk.CTkButton(self.lista_chats, text="Chat Global", command=lambda: self.trocar_chat("global"))
