@@ -24,6 +24,7 @@ class ChatClient(ctk.CTk):
         self.chat_atual = "global"
         self.usuarios_ativos = {}
         self.contatos = {}
+        self.historico_mensagens = {}
 
         self.frames = {}
         self.create_login_frame()
@@ -114,11 +115,13 @@ class ChatClient(ctk.CTk):
         self.chat_atual = chat_id
         self.area_mensagens.configure(state='normal')
         self.area_mensagens.delete("1.0", "end")
-        if chat_id == "global":
-            self.area_mensagens.insert("end", "--- Chat Global ---\n")
-        else:
-            nome = self.usuarios_ativos.get(chat_id, chat_id)
-            self.area_mensagens.insert("end", f"--- Chat com {nome} ---\n")
+
+        if chat_id not in self.historico_mensagens:
+            self.historico_mensagens[chat_id] = []
+
+        for linha in self.historico_mensagens[chat_id]:
+            self.area_mensagens.insert("end", linha)
+
         self.area_mensagens.configure(state='disabled')
 
     def enviar_mensagem(self):
@@ -152,10 +155,11 @@ class ChatClient(ctk.CTk):
                     self.area_mensagens.configure(state='normal')
                     self.area_mensagens.insert("end", f"[Global] {remetente}: {msg}\n")
                     self.area_mensagens.configure(state='disabled')
-
+                    self.historico_mensagens.setdefault("global", []).append(f"[Global] {remetente}: {msg}\n")
                 elif dados.startswith("MSG_PRIV|"):
                     _, numero_remetente, nome_remetente, msg = dados.split("|", 3)
                     self.adicionar_contato(numero_remetente, nome_remetente)
+                    self.historico_mensagens.setdefault(numero_remetente, []).append(f"[Privado] {nome_remetente}: {msg}\n")
                     if self.chat_atual == numero_remetente:
                         self.area_mensagens.configure(state='normal')
                         self.area_mensagens.insert("end", f"[Privado] {nome_remetente}: {msg}\n")
